@@ -441,7 +441,7 @@ class MemoryIndex(
             db.execSQL("CREATE INDEX IF NOT EXISTS idx_chunks_path ON chunks(path)")
             db.execSQL("CREATE INDEX IF NOT EXISTS idx_chunks_hash ON chunks(hash)")
             try {
-                db.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS chunks_fts USING fts5(text, content='')")
+                db.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS chunks_fts USING fts5(text)")
             } catch (e: Exception) {
                 Log.w(TAG, "FTS5 not available on this device, falling back to LIKE search", e)
                 ftsCreated = false
