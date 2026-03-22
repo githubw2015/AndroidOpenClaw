@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:installLocation="internalOnly"
+    tools:ignore="MissingLeanbackLauncher">
+    <!-- 正式版本 - 生产环境使用，使用现代权限管理 -->
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" /> <!-- 基础权限 -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" /> <!-- 存储权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- 服务权限 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!-- 现代化权限管理 - 使用用户授权和无障碍服务 -->
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.BIND_DEVICE_ADMIN"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:ignore="RequestInstallPackagesPolicy" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.DELETE_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- Queries for specific apps can be added here if needed -->
+    <queries>
+        <!-- Example: <package android:name="com.android.settings" /> -->
+        <package android:name="com.xiaolongxia.androidopenclaw.accessibility" />
+    </queries>
+
+    <application
+        android:name="com.xiaolongxia.androidopenclaw.core.MyApplication"
+        android:allowBackup="false"
+        android:banner="@drawable/banner"
+        android:extractNativeLibs="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PhoneForClaw">
+        <!-- 主页 - Compose版本 -->
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.MainActivityCompose"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 模型配置引导页（首次启动） -->
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.ModelSetupActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <!-- 模型配置页面（两页式） -->
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.ModelConfigActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <!-- Skills 管理页面 -->
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.SkillsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <!-- 权限管理页面 -->
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.PermissionsActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <!-- Channel 列表页面 -->
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.ChannelListActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <!-- Feishu Channel 配置页面 -->
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.FeishuChannelActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <!-- MCP Server 配置页面（给外部 Agent 用，与 AndroidOpenClaw 自身无关） -->
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.McpConfigActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <!-- Discord Channel 配置页面 -->
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.DiscordChannelActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.TelegramChannelActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.SlackChannelActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.SignalChannelActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.TermuxSetupActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+        <activity
+            android:name="com.xiaolongxia.androidopenclaw.ui.activity.WhatsAppChannelActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PhoneForClaw" />
+
+
+        <!-- 前台服务（保活） -->
+        <service
+            android:name="com.xiaolongxia.androidopenclaw.core.ForegroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- OpenClaw: Node foreground service (gateway connection keepalive) -->
+        <service
+            android:name="ai.openclaw.app.NodeForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- OpenClaw: Device notification listener (forwards notifications to gateway) -->
+        <service
+            android:name="ai.openclaw.app.node.DeviceNotificationListenerService"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- OpenClaw: FileProvider for camera/photo sharing with gateway -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- 观察能力(UI Tree + Screenshot)已移至独立模块 extensions/observer --> <!-- ADB输入法服务 - 系统级权限 -->
+        <service
+            android:name="com.xiaolongxia.androidopenclaw.service.ClawIME"
+            android:exported="true"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/methods" />
+        </service>
+
+        <!-- 文件提供者 - 系统级权限 -->
+        <provider
+            android:name="com.xiaolongxia.androidopenclaw.ClawFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <!-- APK安装结果广播接收器 -->
+        <receiver
+            android:name="com.xiaolongxia.androidopenclaw.util.InstallManager$InstallResultBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="Instantiatable" />
+        <!-- Agent消息广播接收器 -->
+        <receiver
+            android:name="com.xiaolongxia.androidopenclaw.core.AgentMessageReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.xiaolongxia.androidopenclaw.ACTION_EXECUTE_AGENT" />
+            </intent-filter>
+        </receiver>
+        <!-- Chat消息广播接收器 (用于ADB测试) -->
+        <receiver
+            android:name="com.xiaolongxia.androidopenclaw.util.ChatBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="PHONE_FORCLAW_SEND_MESSAGE" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

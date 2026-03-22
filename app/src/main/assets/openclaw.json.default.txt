@@ -1,0 +1,45 @@
+{
+    "models": {
+        "providers": {
+            "openrouter": {
+                "baseUrl": "https://openrouter.ai/api/v1",
+                "apiKey": "${OPENROUTER_API_KEY}",
+                "models": [
+                    {
+                        "id": "xiaomi/mimo-v2-pro",
+                        "name": "MiMo V2 Pro",
+                        "reasoning": true,
+                        "contextWindow": 1048576,
+                        "maxTokens": 32000
+                    }
+                ]
+            }
+        }
+    },
+    "agents": {
+        "defaults": {
+            "model": {
+                "primary": "openrouter/xiaomi/mimo-v2-pro"
+            }
+        }
+    },
+    "channels": {
+        "feishu": {
+            "enabled": true,
+            "appId": "${FEISHU_APP_ID}",
+            "appSecret": "${FEISHU_APP_SECRET}",
+            "domain": "feishu",
+            "connectionMode": "websocket"
+        }
+    },
+    "gateway": {
+        "port": 18789
+    },
+    "plugins": {
+        "entries": {
+            "feishu": {
+                "enabled": true
+            }
+        }
+    }
+}

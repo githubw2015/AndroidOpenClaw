@@ -1,0 +1,146 @@
+package com.xiaolongxia.androidopenclaw.agent.tools
+
+/**
+ * OpenClaw Source Reference:
+ * - 无 OpenClaw 对应 (Android 平台独有)
+ */
+
+
+import android.content.Context
+import com.xiaolongxia.androidopenclaw.logging.Log
+import com.xiaolongxia.androidopenclaw.providers.FunctionDefinition
+import com.xiaolongxia.androidopenclaw.providers.ParametersSchema
+import com.xiaolongxia.androidopenclaw.providers.PropertySchema
+import com.xiaolongxia.androidopenclaw.providers.ToolDefinition
+import com.xiaolongxia.androidopenclaw.service.ClawIMEManager
+
+/**
+ * ClawIME 输入法工具
+ * 通过内置 ClawIME 输入法发送文本
+ *
+ * 工作原理:
+ * 1. 用户先用 tap() 点击输入框，让其获得焦点
+ * 2. 如果 ClawIME 已启用，键盘会自动弹出
+ * 3. 调用此工具通过 ClawIMEManager 直接调用 ClawIME 的方法
+ * 4. ClawIME 将文本输入到焦点输入框
+ */
+class ClawImeInputSkill(private val context: Context) : Skill {
+    companion object {
+        private const val TAG = "ClawImeInputSkill"
+    }
+
+    override val name = "claw_ime_input"
+    override val description: String
+        get() {
+            val isEnabled = ClawIMEManager.isClawImeEnabled(context)
+            val isConnected = ClawIMEManager.isConnected()
+            val statusNote = when {
+                !isEnabled -> " ⚠️ **不可用** - ClawIME 输入法未启用"
+                !isConnected -> " ⚠️ **不可用** - ClawIME 未连接 (键盘未弹出)"
+                else -> " ✅ ClawIME 已就绪"
+            }
+            return "Input text via ClawIME (supports all characters including Chinese)$statusNote"
+        }
+
+    override fun getToolDefinition(): ToolDefinition {
+        return ToolDefinition(
+            type = "function",
+            function = FunctionDefinition(
+                name = name,
+                description = description,
+                parameters = ParametersSchema(
+                    type = "object",
+                    properties = mapOf(
+                        "text" to PropertySchema("string", "要输入的文本内容"),
+                        "action" to PropertySchema(
+                            "string",
+                            "操作类型: 'input'(输入文本,默认) | 'send'(输入后发送) | 'clear'(清空输入框)",
+                            enum = listOf("input", "send", "clear")
+                        )
+                    ),
+                    required = listOf("text")
+                )
+            )
+        )
+    }
+
+    override suspend fun execute(args: Map<String, Any?>): SkillResult {
+        val text = args["text"] as? String
+        val action = args["action"] as? String ?: "input"
+
+        if (text == null && action != "clear") {
+            return SkillResult.error("Missing required parameter: text")
+        }
+
+        // 检查 ClawIME 是否启用
+        if (!ClawIMEManager.isClawImeEnabled(context)) {
+            return SkillResult.error("ClawIME 输入法未启用。请先切换到 ClawIME 输入法")
+        }
+
+        // 检查 ClawIME 是否已连接
+        if (!ClawIMEManager.isConnected()) {
+            return SkillResult.error("ClawIME 未连接。请确保已点击输入框并弹出键盘")
+        }
+
+        return try {
+            when (action) {
+                "clear" -> {
+                    // 清空输入框
+                    val success = ClawIMEManager.clearText()
+                    if (success) {
+                        kotlinx.coroutines.delay(100)
+                        SkillResult.success("已清空输入框")
+                    } else {
+                        SkillResult.error("清空输入框失败")
+                    }
+                }
+                "send" -> {
+                    // 输入文本并发送
+                    val inputSuccess = ClawIMEManager.inputText(text!!)
+                    if (!inputSuccess) {
+                        return SkillResult.error("输入文本失败")
+                    }
+                    kotlinx.coroutines.delay(500)
+
+                    val sendSuccess = ClawIMEManager.sendMessage()
+                    if (!sendSuccess) {
+                        return SkillResult.error("发送消息失败")
+                    }
+                    kotlinx.coroutines.delay(1000)
+
+                    SkillResult.success(
+                        "已输入并发送: $text (${text.length} chars)",
+                        mapOf(
+                            "text" to text,
+                            "length" to text.length,
+                            "action" to "send"
+                        )
+                    )
+                }
+                else -> {
+                    // 仅输入文本
+                    val success = ClawIMEManager.inputText(text!!)
+                    if (!success) {
+                        return SkillResult.error("输入文本失败")
+                    }
+
+                    val waitTime = (100L + (text.length * 5L).coerceAtMost(300L)).coerceAtLeast(1000L)
+                    kotlinx.coroutines.delay(waitTime)
+
+                    SkillResult.success(
+                        "已输入: $text (${text.length} chars)",
+                        mapOf(
+                            "text" to text,
+                            "length" to text.length,
+                            "wait_time_ms" to waitTime
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "ClawIME input failed", e)
+            SkillResult.error("输入失败: ${e.message}")
+        }
+    }
+
+}

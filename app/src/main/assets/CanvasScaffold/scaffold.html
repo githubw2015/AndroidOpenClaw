@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    padding: 24px;
+    text-align: center;
+  }
+  .icon { font-size: 56px; margin-bottom: 16px; }
+  h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+  p { font-size: 14px; color: #6e6e73; line-height: 1.5; max-width: 260px; }
+</style>
+</head>
+<body>
+  <div class="icon">🖥️</div>
+  <h2>Canvas</h2>
+  <p>Agent 可通过 canvas.present 命令在此显示网页内容。当前无活跃画布。</p>
+  <script>
+    // OpenClaw Canvas bridge stubs — CanvasController will inject real state
+    window.__openclaw = window.__openclaw || {
+      setDebugStatusEnabled: function() {},
+      setStatus: function() {},
+      renderHome: function(payload) {
+        try {
+          var data = JSON.parse(payload);
+          if (data && data.sessions && data.sessions.length > 0) {
+            document.querySelector('p').textContent = '已连接 · ' + data.sessions.length + ' 个会话';
+          }
+        } catch(e) {}
+      }
+    };
+  </script>
+</body>
+</html>
