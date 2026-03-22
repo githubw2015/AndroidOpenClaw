@@ -67,15 +67,26 @@ fun ForClawConnectTab() {
             try {
                 val loader = ConfigLoader(context)
                 val config = loader.loadOpenClawConfig()
-                val providers = config.resolveProviders()
-                val entry = providers.entries.firstOrNull()
-                if (entry != null) {
-                    providerName = entry.key
-                    modelId = entry.value.models.firstOrNull()?.id ?: config.resolveDefaultModel()
-                    val key = entry.value.apiKey
+
+                // 获取当前正在使用的模型（从 agents.defaults.model.primary 读取）
+                val defaultModel = config.resolveDefaultModel()
+                modelId = defaultModel
+
+                // 解析提供商名称（格式: "provider/model-id"）
+                val providerName_ = if (defaultModel.contains("/")) {
+                    defaultModel.substringBefore("/")
+                } else {
+                    // 如果没有 "/" 分隔符，尝试从 providers 中查找
+                    config.resolveProviders().entries.firstOrNull()?.key ?: "未配置"
+                }
+                providerName = providerName_
+
+                // 获取该提供商的 API Key 状态
+                val provider = config.resolveProviders()[providerName_]
+                if (provider != null) {
+                    val key = provider.apiKey
                     apiKeyOk = !key.isNullOrBlank() && !key.startsWith("\${") && key != "未配置"
                 } else {
-                    providerName = "未配置"
                     apiKeyOk = false
                 }
 
