@@ -1,6 +1,4 @@
 # 📱 AndroidOpenClaw
-
-[![Release](https://img.shields.io/badge/Release-v1.3.0-blue.svg)](https://github.com/SelectXn00b/AndroidOpenClaw/releases/latest)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-green.svg)](https://www.android.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
